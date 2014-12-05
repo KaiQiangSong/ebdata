@@ -250,6 +250,28 @@ feature get_Gap_statistics(vec_t trade_list)
 	return get_statistics_feature(Gap);
 }
 
+feature get_dist2_statistics(vec_t trade_list)
+{
+	vec Dist;
+	size_t len = trade_list.size();
+	for (size_t i = 0; i + 1 < len; ++i)
+		for (size_t j = i + 1; j < len; ++j)
+			Dist.push_back(dist2(trade_list[i].addr, trade_list[j].addr));
+	return get_statistics_feature(Dist);
+}
+
+feature get_distglobal_statistics(vec_t trade_list)
+{
+	vec Dist;
+	size_t len = trade_list.size();
+	for (size_t i = 0; i + 1 < len; ++i)
+		for (size_t j = i + 1; j < len; ++j)
+			Dist.push_back(dist_global(trade_list[i].addr, trade_list[j].addr));
+	return get_statistics_feature(Dist);
+}
+
+feature get_basic_feature(vec_t trade_list);
+
 void make_feature_list()
 {
 	func_vec.push_back(feat_trade_amount);
@@ -259,10 +281,8 @@ void make_feature_list()
 	//Date Gap
 	func_vec.push_back(get_Date_statistics);
 	//Date
-	func_vec.push_back(feat_trade_dist2_total);
-	func_vec.push_back(feat_trade_distglobal_total);
-	func_vec.push_back(feat_trade_dist2_max);
-	func_vec.push_back(feat_trade_distglobal_max);
+	func_vec.push_back(get_dist2_statistics);
+	func_vec.push_back(get_distglobal_statistics);
 	//Location dist
 }
 

@@ -12,7 +12,8 @@
 
 
 //-----------------------------Load and Print part-----------------------------//
-std::vector<customer> T_customer;
+//std::vector<customer> T_customer;
+std::map<int, customer> T_customer;
 std::vector<trade> T_trade;
 std::map<int, int> Label;
 #include "data_load.hpp"

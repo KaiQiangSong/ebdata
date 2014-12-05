@@ -10,7 +10,8 @@
 #include "abnormal.hpp"
 
 
-extern std::vector<customer> T_customer;
+//extern std::vector<customer> T_customer;
+extern std::map<int, customer> T_customer;
 extern std::vector<trade> T_trade;
 extern std::map<int, int> Label;
 
@@ -26,7 +27,7 @@ void load_customer()
 	{
 		customer x;
 		x.load(ifs);
-		T_customer.push_back(x);
+		T_customer[x.id] = x;
 #ifdef DEBUG_LOAD
 		++cnt;
 		if ((cnt % 1000) == 0) std::cout << cnt << std::endl;
@@ -47,6 +48,7 @@ void load_trade()
 		trade x;
 		x.load(ifs);
 		T_trade.push_back(x);
+		//T_trade[x.id] = x;
 #ifdef DEBUG_LOAD
 		++cnt;
 		if ((cnt % 1000) == 0) std::cout << cnt << std::endl;
@@ -91,7 +93,7 @@ void print_all()
 {
 	std::ofstream ofs("debug_load.txt");
 	for (auto it : T_customer)
-		it.print(ofs);
+		it.second.print(ofs);
 	for (auto it : T_trade)
 		it.print(ofs);
 	for (auto it : Label)
