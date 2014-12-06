@@ -10,8 +10,10 @@
 extern std::vector<func> func_vec;
 //extern std::vector<std::map<int, feature>> feat;
 extern std::map<int, std::vector<feature>> feat;
+extern std::map<int, vec> featVec;
 
 #include "statistics.hpp"
+#include "analysis.hpp"
 
 feature feat_trade_amount(vec_t trade_list)
 {
@@ -361,22 +363,56 @@ void extract_feature()
 	}
 }
 
-void display_feature()
+
+
+void formulation_feat2vec()
 {
-	//std::ofstream ofs("feat1_train.data");
-	std::ofstream ofs("feat1_test.data");
 	for (auto it : feat)
 	{
-		ofs << (Label[it.first]*2)-1 << " :";
-		int cnt = 0;
 		for (auto f : it.second)
 		{
 			for (auto d : f)
-			{
-				++cnt;
-				ofs << " " << cnt << ":" << d;
-			}
+				featVec[it.first].push_back(d);
 		}
+	}
+}
+
+vec check_each_feat()
+{
+	std::ofstream ofs("check_each_feature.txt");
+	size_t dim = featVec.begin()->second.size();
+	vec feature_mark;
+	
+	for (size_t i = 0; i < dim; ++i)
+	{
+		std::vector<int> id;
+		vec Feat;
+		for (auto it : featVec)
+		{
+			id.push_back(it.first);
+			Feat.push_back(it.second[i]);
+		}
+		double result = mark(id, Feat);
+		feature_mark.push_back(result);
+		std::cout << i+1 << " :" << result << std::endl;
+		ofs << i + 1 << " : " << result << std::endl;
+		//system("pause");
+	}
+	ofs.close();
+	return feature_mark;
+}
+
+void display_feature(double threshold)
+{
+	std::ofstream ofs("feat1_train.data");
+	//std::ofstream ofs("feat1_test.data");
+	for (auto it : featVec)
+	{
+		ofs << (Label[it.first]*2)-1 << " :";
+		size_t len = it.second.size();
+		for (size_t i = 0; i < len; ++i)
+			if (feature_mark[i] >= threshold)
+				ofs << " " << i << ":" << it.second[i];
 		ofs << std::endl;
 	}
 	ofs.close();

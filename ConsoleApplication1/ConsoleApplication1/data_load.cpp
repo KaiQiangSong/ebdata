@@ -18,8 +18,8 @@ extern std::map<int, int> Label;
 
 void load_customer()
 {
-	//std::ifstream ifs("train_customer.csv");
-	std::ifstream ifs("test_customer.csv");
+	std::ifstream ifs("train_customer.csv");
+	//std::ifstream ifs("test_customer.csv");
 	std::string s;
 	getline(ifs, s);
 	int cnt = 0;
@@ -38,8 +38,8 @@ void load_customer()
 
 void load_trade()
 {
-	//std::ifstream ifs("train_trade.csv");
-	std::ifstream ifs("test_trade.csv");
+	std::ifstream ifs("train_trade.csv");
+	//std::ifstream ifs("test_trade.csv");
 	std::string s;
 	getline(ifs, s);
 	int cnt = 0;

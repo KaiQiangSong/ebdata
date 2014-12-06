@@ -38,32 +38,33 @@ typedef std::function<double(vec)> func_v2d;
 std::map<int, std::vector<feature>> feat;
 std::vector<func> func_vec;
 std::vector<func_v2d> func_statistics;
+std::map<int, vec> featVec;
+vec feature_mark;
 
 #include "feature.hpp"
+
+
+//-----------------------------Feature Analysis------------------------------//
+typedef std::map<int, double> id2feat;
+#include "analysis.hpp"
 
 
 
 int main(int argv, char *argc[])
 {
 	load_all();
-	int cnt_pos = 0;
-	int cnt_neg = 0;
-	for (auto it : Label)
-	{
-		if (it.second == 1) ++cnt_pos;
-		else ++cnt_neg;
-	}
-	std::cout << "POS = " << cnt_pos << std::endl;
-	std::cout << "NEG = " << cnt_neg << std::endl;
-	system("pause");
 	std::cout << "Load Done" << std::endl;
-	//build_hash();
+	build_hash();
 	std::cout << "Build Hash List Done" << std::endl;
-	//make_statistics_func_list();
-	//make_feature_list();
-	//extract_feature();
+	make_statistics_func_list();
+	make_feature_list();
+	extract_feature();
 	std::cout << "Extract Feature Done" << std::endl;
-	//display_feature();
+	formulation_feat2vec();
+	std::cout << "Formulation feature to Vector Done" << std::endl;
+	feature_mark = check_each_feat();
+	std::cout << "Check Each feat Done" << std::endl;
+	display_feature(5);
 	std::cout << "Display Done" << std::endl;
 	return 0;
 }
