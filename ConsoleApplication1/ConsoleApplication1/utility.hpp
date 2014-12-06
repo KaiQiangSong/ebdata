@@ -1,6 +1,9 @@
 #ifndef UTILITY_SKQ
 #define UTILITY_SKQ
 
+#define TRAIN
+//#define TEST
+
 #include <iostream>
 #include <string>
 #include <vector>

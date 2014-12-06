@@ -1,5 +1,11 @@
-#include <cstdlib>
+/*
+Notice:
+You can switch TRAIN or TEST in the file named "utility.hpp".
+By defining TRAIN or TEST in the headfile.
+*/
 
+
+#include <cstdlib>
 #include <fstream>
 #include <map>
 #include <algorithm>
@@ -9,6 +15,8 @@
 #include "customer.hpp"
 #include "trade.hpp"
 #include "abnormal.hpp"
+
+
 
 
 //-----------------------------Load and Print part-----------------------------//
@@ -64,7 +72,7 @@ int main(int argv, char *argc[])
 	std::cout << "Formulation feature to Vector Done" << std::endl;
 	feature_mark = check_each_feat();
 	std::cout << "Check Each feat Done" << std::endl;
-	display_feature(5);
+	display_feature(10);
 	std::cout << "Display Done" << std::endl;
 	return 0;
 }

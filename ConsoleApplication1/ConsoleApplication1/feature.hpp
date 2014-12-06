@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <cmath>
+#include <ctime>
 
 
 extern std::vector<func> func_vec;
@@ -379,6 +380,8 @@ void formulation_feat2vec()
 
 vec check_each_feat()
 {
+	/*
+#ifdef TRAIN
 	std::ofstream ofs("check_each_feature.txt");
 	size_t dim = featVec.begin()->second.size();
 	vec feature_mark;
@@ -395,24 +398,47 @@ vec check_each_feat()
 		double result = mark(id, Feat);
 		feature_mark.push_back(result);
 		std::cout << i+1 << " :" << result << std::endl;
-		ofs << i + 1 << " : " << result << std::endl;
+		ofs << result << std::endl;
 		//system("pause");
 	}
 	ofs.close();
 	return feature_mark;
+#endif
+	*/
+//#ifdef TEST
+	std::ifstream ifs("check_each_feature.txt");
+	vec feature_mark;
+	double x;
+	while (ifs >> x)
+		feature_mark.push_back(x);
+	ifs.close();
+	return feature_mark;
+//#endif
 }
 
 void display_feature(double threshold)
 {
+#ifdef TRAIN
 	std::ofstream ofs("feat1_train.data");
-	//std::ofstream ofs("feat1_test.data");
+#endif
+#ifdef TEST
+	std::ofstream ofs("feat1_test.data");
+#endif
+	srand(time(NULL));
 	for (auto it : featVec)
 	{
+#ifdef TRAIN
+		if (Label[it.first] == 0)
+		{
+			int ran = rand() % 1000;
+			if (ran < 800) continue;
+		}
+#endif
 		ofs << (Label[it.first]*2)-1 << " :";
 		size_t len = it.second.size();
 		for (size_t i = 0; i < len; ++i)
 			if (feature_mark[i] >= threshold)
-				ofs << " " << i << ":" << it.second[i];
+				ofs << " " << i+1 << ":" << it.second[i];
 		ofs << std::endl;
 	}
 	ofs.close();

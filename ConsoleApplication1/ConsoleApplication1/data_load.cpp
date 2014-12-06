@@ -1,4 +1,5 @@
-#define DEBUG_LOAD
+//#define DEBUG_LOAD
+
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -18,8 +19,12 @@ extern std::map<int, int> Label;
 
 void load_customer()
 {
+#ifdef TRAIN
 	std::ifstream ifs("train_customer.csv");
-	//std::ifstream ifs("test_customer.csv");
+#endif
+#ifdef TEST
+	std::ifstream ifs("test_customer.csv");
+#endif
 	std::string s;
 	getline(ifs, s);
 	int cnt = 0;
@@ -38,8 +43,12 @@ void load_customer()
 
 void load_trade()
 {
+#ifdef TRAIN
 	std::ifstream ifs("train_trade.csv");
-	//std::ifstream ifs("test_trade.csv");
+#endif
+#ifdef TEST
+	std::ifstream ifs("test_trade.csv");
+#endif
 	std::string s;
 	getline(ifs, s);
 	int cnt = 0;
