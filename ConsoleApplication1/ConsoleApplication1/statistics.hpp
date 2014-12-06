@@ -1,11 +1,14 @@
 #ifndef STATISTICS
 #define STATISTICS
 
+#include <cmath>
 #include <vector>
 #include <functional>
 #include <algorithm>
 
-
+#ifndef EPS
+#define EPS 1e-8
+#endif
 
 extern std::vector<func_v2d> func_statistics;
 
@@ -55,7 +58,7 @@ double get_center_moment(vec V,double k)
 double get_StandardDeviation(vec V)
 {
 	size_t len = V.size();
-	if (len > 1)
+	if (len > 1 && fabs(get_center_moment(V,2)) > EPS)
 		return sqrt(get_center_moment(V, 2) * len / (len - 1));
 	return 1;
 }

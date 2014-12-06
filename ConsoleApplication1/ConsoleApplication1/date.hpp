@@ -92,7 +92,7 @@ public:
 	int date2time(int year, int month, int day)
 	{
 		int res = 0;
-		for (int i = 1990; i < year; ++i)
+		for (int i = 1900; i < year; ++i)
 			res += day_of_year(i);
 		for (int i = 0; i < month-1; ++i)
 			res += day_of_month(year, i);
@@ -106,7 +106,7 @@ public:
 	void get_date(int &year, int&month, int &day)
 	{
 		int sum = 0;
-		year = 1990; month = 0; day = 0;
+		year = 1900; month = 0; day = 0;
 		while (sum + day_of_year(year) < time)
 		{
 			sum += day_of_year(year);

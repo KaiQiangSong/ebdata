@@ -270,7 +270,6 @@ feature get_distglobal_statistics(vec_t trade_list)
 	return get_statistics_feature(Dist);
 }
 
-feature get_basic_feature(vec_t trade_list);
 
 void make_feature_list()
 {
@@ -286,8 +285,57 @@ void make_feature_list()
 	//Location dist
 }
 
+feature get_basic_feature(customer x)
+{
+	feature feat;
+	feat.push_back(type2int[x.type]);
+	feat.push_back(x.id);
+	feat.push_back(x.gender);
+	if (x.birth.isVailed())
+	{
+		int year, month, day;
+		x.birth.get_date(year, month, day);
+		for (int i = 1; i < 13; ++i)
+		{
+			if (i == month)
+				feat.push_back(1);
+			else
+				feat.push_back(-1);
+		}
+		for (int i = 0; i < 4; ++i)
+			if (i * 3 < month && month <= (i * 3 + 3))
+				feat.push_back(1);
+			else
+				feat.push_back(-1);
+		// month
+		for (int k = 0; k < 10; ++k)
+			for (int i = 1990; i + k <= 2012; ++i)
+				if (i <= year && year <= i + k)
+					feat.push_back(1);
+				else
+					feat.push_back(-1);
+	}
+	else
+	{
+		for (int i = 1; i < 13; ++i)
+			feat.push_back(0);
+		for (int i = 0; i < 4; ++i)
+			feat.push_back(0);
+		for (int k = 0; k < 10; ++k)
+			for (int i = 1990; i + k <= 2012; ++i)
+				feat.push_back(0);
+	}
+	//histogram of month and year;
+	for (int i = 0; i < 35; ++i)
+		if (x.addr.get_province() == i)
+			feat.push_back(+1);
+		else feat.push_back(-1);
+	return feat;
+}
+
 void extract_feature()
 {
+	/*
 	int cnt = 0;
 	for (auto fun : func_vec)
 	{
@@ -300,10 +348,22 @@ void extract_feature()
 			feat[it.first].push_back(tfeature);
 		}
 	}
+	*/
+	for (auto it : Hash)
+	{
+		feat[it.first].push_back(get_basic_feature(T_customer[it.first]));
+		std::sort(it.second.begin(), it.second.end(), cmp);
+		for (auto fun : func_vec)
+		{
+			feature tfeature = fun(it.second);
+			feat[it.first].push_back(tfeature);
+		}
+	}
 }
 
 void display_feature()
 {
+	//std::ofstream ofs("feat1_train.data");
 	std::ofstream ofs("feat1_test.data");
 	for (auto it : feat)
 	{

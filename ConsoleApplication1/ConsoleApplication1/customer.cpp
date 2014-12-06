@@ -59,10 +59,10 @@ void customer::load(std::istream& ifs)
 	if (buffer[3] != "")
 	{
 		addr.whole = buffer[3];
-		addr.vailed = true;
+		addr.setVailed(true);
 	}
 	else
-		addr.vailed = false;
+		addr.setVailed(false);
 	//get customer's address
 	
 	type = buffer[4];

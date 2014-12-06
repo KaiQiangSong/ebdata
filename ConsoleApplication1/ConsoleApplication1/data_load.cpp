@@ -1,4 +1,4 @@
-//#define DEBUG_LOAD
+#define DEBUG_LOAD
 #include <iostream>
 #include <fstream>
 #include <map>

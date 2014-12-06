@@ -7,12 +7,8 @@
 
 #include "date.hpp"
 #include "location.hpp"
+#include "address.hpp"
 
-struct address
-{
-	std::string whole;
-	bool vailed;
-};
 
 std::string getline(std::istream& ifs);
 std::string formu(std::string s);
