@@ -46,7 +46,7 @@ void abnormal::load(std::istream &ifs)
 	}
 	else
 		check_date.setVailed(false);
-	//get customer's birthday
+	//get date
 
 	if (buffer[2] != "")
 		label = atoi(buffer[2].c_str());

@@ -1,6 +1,15 @@
 #ifndef FEATURE
 #define FEATURE
 
+//#define LOAD_MARK
+
+#ifdef TEST
+#ifndef LOAD_MARK
+#endif
+#endif
+
+
+
 #include <vector>
 #include <map>
 #include <functional>
@@ -273,6 +282,24 @@ feature get_distglobal_statistics(vec_t trade_list)
 	return get_statistics_feature(Dist);
 }
 
+feature get_track_dist2_statistics(vec_t trade_list)
+{
+	vec Dist;
+	size_t len = trade_list.size();
+	for (size_t i = 0; i + 1< len; ++i)
+		Dist.push_back(dist2(trade_list[i].addr, trade_list[i + 1].addr));
+	return get_statistics_feature(Dist);
+}
+
+
+feature get_track_distglobal_statistics(vec_t trade_list)
+{
+	vec Dist;
+	size_t len = trade_list.size();
+	for (size_t i = 0; i + 1< len; ++i )
+		Dist.push_back(dist_global(trade_list[i].addr, trade_list[i + 1].addr));
+	return get_statistics_feature(Dist);
+}
 
 void make_feature_list()
 {
@@ -286,6 +313,9 @@ void make_feature_list()
 	func_vec.push_back(get_dist2_statistics);
 	func_vec.push_back(get_distglobal_statistics);
 	//Location dist
+	func_vec.push_back(get_track_dist2_statistics);
+	func_vec.push_back(get_track_distglobal_statistics);
+	//Track
 }
 
 feature get_basic_feature(customer x)
@@ -312,7 +342,7 @@ feature get_basic_feature(customer x)
 				feat.push_back(-1);
 		// month
 		for (int k = 0; k < 10; ++k)
-			for (int i = 1990; i + k <= 2012; ++i)
+			for (int i = 1910; i + k <= 2012; ++i)
 				if (i <= year && year <= i + k)
 					feat.push_back(1);
 				else
@@ -325,7 +355,7 @@ feature get_basic_feature(customer x)
 		for (int i = 0; i < 4; ++i)
 			feat.push_back(0);
 		for (int k = 0; k < 10; ++k)
-			for (int i = 1990; i + k <= 2012; ++i)
+			for (int i = 1910; i + k <= 2012; ++i)
 				feat.push_back(0);
 	}
 	//histogram of month and year;
@@ -380,8 +410,8 @@ void formulation_feat2vec()
 
 vec check_each_feat()
 {
-	/*
-#ifdef TRAIN
+
+#ifndef LOAD_MARK
 	std::ofstream ofs("check_each_feature.txt");
 	size_t dim = featVec.begin()->second.size();
 	vec feature_mark;
@@ -404,8 +434,8 @@ vec check_each_feat()
 	ofs.close();
 	return feature_mark;
 #endif
-	*/
-//#ifdef TEST
+
+#ifdef LOAD_MARK
 	std::ifstream ifs("check_each_feature.txt");
 	vec feature_mark;
 	double x;
@@ -413,7 +443,7 @@ vec check_each_feat()
 		feature_mark.push_back(x);
 	ifs.close();
 	return feature_mark;
-//#endif
+#endif
 }
 
 void display_feature(double threshold)

@@ -1,4 +1,5 @@
 //#define DEBUG_HASH
+#define FILTER
 
 #ifndef BUILD_HASH_LIST
 #define BUILD_HASH_LIST
@@ -35,7 +36,12 @@ void build_hash_id2tradelist()
 			vec_t x;
 			Hash[it.id] = x;
 		}
-		Hash[it.id].push_back(it);
+#ifdef FILTER
+		date_v check_date = Verify[it.id];
+		if (check_date.isVailed() && it.timeStamp < check_date)
+#endif
+			Hash[it.id].push_back(it);
+		//Filter
 	}
 #ifdef DEBUG_HASH
 	for (auto it : Hash)

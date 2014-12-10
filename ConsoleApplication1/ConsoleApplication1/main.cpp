@@ -24,6 +24,7 @@ By defining TRAIN or TEST in the headfile.
 std::map<int, customer> T_customer;
 std::vector<trade> T_trade;
 std::map<int, int> Label;
+std::map<int, date_v> Verify;
 #include "data_load.hpp"
 
 

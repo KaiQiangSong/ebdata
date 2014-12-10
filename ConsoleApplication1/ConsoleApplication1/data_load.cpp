@@ -15,7 +15,7 @@
 extern std::map<int, customer> T_customer;
 extern std::vector<trade> T_trade;
 extern std::map<int, int> Label;
-
+extern std::map<int, date_v> Verify;
 
 void load_customer()
 {
@@ -77,6 +77,8 @@ void load_abnormal()
 		abnormal x;
 		x.load(ifs);
 		Label[x.id] = x.label;
+		Verify[x.id] = x.check_date;
+		//in order to filter some useless information
 #ifdef DEBUG_LOAD
 		++cnt;
 		if ((cnt % 1000) == 0) std::cout << cnt << std::endl;
