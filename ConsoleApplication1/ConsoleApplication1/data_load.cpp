@@ -32,6 +32,7 @@ void load_customer()
 	{
 		customer x;
 		x.load(ifs);
+		if (x.id == 0) continue;
 		T_customer[x.id] = x;
 #ifdef DEBUG_LOAD
 		++cnt;
@@ -56,6 +57,7 @@ void load_trade()
 	{
 		trade x;
 		x.load(ifs);
+		if (x.id == 0) continue;
 		T_trade.push_back(x);
 		//T_trade[x.id] = x;
 #ifdef DEBUG_LOAD
@@ -76,6 +78,7 @@ void load_abnormal()
 	{
 		abnormal x;
 		x.load(ifs);
+		if (x.id == 0) continue;
 		Label[x.id] = x.label;
 		Verify[x.id] = x.check_date;
 		//in order to filter some useless information

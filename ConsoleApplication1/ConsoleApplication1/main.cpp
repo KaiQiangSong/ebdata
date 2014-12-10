@@ -41,14 +41,15 @@ std::map<std::string, int> type2int;
 typedef std::vector<double> feature;
 #include <functional>
 typedef std::function<feature(vec_t)> func;
-typedef std::vector<double> vec;
-typedef std::function<double(vec)> func_v2d;
+typedef std::vector<double> vec_d;
+typedef std::vector<int> vec_i;
+typedef std::function<double(vec_d)> func_v2d;
 
 std::map<int, std::vector<feature>> feat;
 std::vector<func> func_vec;
 std::vector<func_v2d> func_statistics;
-std::map<int, vec> featVec;
-vec feature_mark;
+std::map<int, vec_d> featVec;
+vec_d feature_mark;
 
 #include "feature.hpp"
 
@@ -73,7 +74,7 @@ int main(int argv, char *argc[])
 	std::cout << "Formulation feature to Vector Done" << std::endl;
 	feature_mark = check_each_feat();
 	std::cout << "Check Each feat Done" << std::endl;
-	display_feature(10);
+	display_feature(0.18);
 	std::cout << "Display Done" << std::endl;
 	return 0;
 }

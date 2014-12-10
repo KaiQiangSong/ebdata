@@ -12,42 +12,44 @@
 
 extern std::vector<func_v2d> func_statistics;
 
-double get_max(vec V)
+double get_max(vec_d V)
 {
 	if (V.size()) return *std::max_element(V.begin(), V.end());
 	return 0;
 }
 
-double get_min(vec V)
+double get_min(vec_d V)
 {
 	if (V.size()) return *std::min_element(V.begin(), V.end());
 	return 0;
 }
 
-double get_range(vec V)
+double get_range(vec_d V)
 {
 	return get_max(V) - get_min(V);
 }
 
-double get_avg(vec V)
+double get_avg(vec_d V)
 {
 	size_t len = V.size();
+	if (len < 1) return 0;
 	double sum = 0;
 	for (auto it : V)
 		sum += it;
 	return (sum / len);
 }
 
-double get_median(vec V)
+double get_median(vec_d V)
 {
 	size_t len = V.size();
-	if (len) return V[len / 2];
+	if (len>0) return V[len / 2];
 	return 0;
 }
 
-double get_center_moment(vec V,double k)
+double get_center_moment(vec_d V,double k)
 {
 	size_t len = V.size();
+	if (len < 1) return 1;
 	double avg = get_avg(V);
 	double sum = 0;
 	for (auto it : V)
@@ -55,20 +57,20 @@ double get_center_moment(vec V,double k)
 	return (sum / len);
 }
 
-double get_StandardDeviation(vec V)
+double get_StandardDeviation(vec_d V)
 {
 	size_t len = V.size();
 	if (len > 1 && fabs(get_center_moment(V,2)) > EPS)
-		return sqrt(get_center_moment(V, 2) * len / (len - 1));
+		return sqrt(get_center_moment(V, 2) * len /(double) (len - 1));
 	return 1;
 }
 
-double get_Skewness(vec V)
+double get_Skewness(vec_d V)
 {
 	return get_center_moment(V, 3) / pow(get_StandardDeviation(V), 3);
 }
 
-double get_Kurtosis(vec V)
+double get_Kurtosis(vec_d V)
 {
 	return get_center_moment(V, 4) / pow(get_StandardDeviation(V), 4);
 }
@@ -85,7 +87,7 @@ void make_statistics_func_list()
 	func_statistics.push_back(get_Kurtosis);
 }
 
-feature get_statistics_feature(vec V)
+feature get_statistics_feature(vec_d V)
 {
 	feature feat;
 	for (auto fun : func_statistics)

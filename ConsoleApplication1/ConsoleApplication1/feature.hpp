@@ -1,7 +1,7 @@
 #ifndef FEATURE
 #define FEATURE
 
-//#define LOAD_MARK
+#define LOAD_MARK
 
 #ifdef TEST
 #ifndef LOAD_MARK
@@ -15,12 +15,14 @@
 #include <functional>
 #include <cmath>
 #include <ctime>
+#include <sstream>
+#include <string>
 
 
 extern std::vector<func> func_vec;
 //extern std::vector<std::map<int, feature>> feat;
 extern std::map<int, std::vector<feature>> feat;
-extern std::map<int, vec> featVec;
+extern std::map<int, vec_d> featVec;
 
 #include "statistics.hpp"
 #include "analysis.hpp"
@@ -36,7 +38,10 @@ feature feat_trade_amount(vec_t trade_list)
 feature feat_trade_region(vec_t trade_list)
 {
 	feature feat;
-	feat.push_back(trade_list[trade_list.size() - 1].timeStamp - trade_list[0].timeStamp);
+	if (trade_list.size() > 0)
+		feat.push_back(trade_list[trade_list.size() - 1].timeStamp - trade_list[0].timeStamp);
+	else
+		feat.push_back(0);
 	return feat;
 }
 
@@ -248,14 +253,14 @@ feature feat_trade_location_avg(vec_t trade_list)
 
 feature get_Date_statistics(vec_t trade_list)
 {
-	vec Date;
+	vec_d Date;
 	for (auto it : trade_list)
 		Date.push_back((double)it.timeStamp.get_time());
 	return get_statistics_feature(Date);
 }
 feature get_Gap_statistics(vec_t trade_list)
 {
-	vec Gap;
+	vec_d Gap;
 	size_t len = trade_list.size();
 	for (size_t i = 0; i + 1 < len; ++i)
 		Gap.push_back(trade_list[i + 1].timeStamp.get_time() - trade_list[i].timeStamp.get_time());
@@ -264,7 +269,7 @@ feature get_Gap_statistics(vec_t trade_list)
 
 feature get_dist2_statistics(vec_t trade_list)
 {
-	vec Dist;
+	vec_d Dist;
 	size_t len = trade_list.size();
 	for (size_t i = 0; i + 1 < len; ++i)
 		for (size_t j = i + 1; j < len; ++j)
@@ -274,7 +279,7 @@ feature get_dist2_statistics(vec_t trade_list)
 
 feature get_distglobal_statistics(vec_t trade_list)
 {
-	vec Dist;
+	vec_d Dist;
 	size_t len = trade_list.size();
 	for (size_t i = 0; i + 1 < len; ++i)
 		for (size_t j = i + 1; j < len; ++j)
@@ -284,7 +289,7 @@ feature get_distglobal_statistics(vec_t trade_list)
 
 feature get_track_dist2_statistics(vec_t trade_list)
 {
-	vec Dist;
+	vec_d Dist;
 	size_t len = trade_list.size();
 	for (size_t i = 0; i + 1< len; ++i)
 		Dist.push_back(dist2(trade_list[i].addr, trade_list[i + 1].addr));
@@ -294,7 +299,7 @@ feature get_track_dist2_statistics(vec_t trade_list)
 
 feature get_track_distglobal_statistics(vec_t trade_list)
 {
-	vec Dist;
+	vec_d Dist;
 	size_t len = trade_list.size();
 	for (size_t i = 0; i + 1< len; ++i )
 		Dist.push_back(dist_global(trade_list[i].addr, trade_list[i + 1].addr));
@@ -321,9 +326,9 @@ void make_feature_list()
 feature get_basic_feature(customer x)
 {
 	feature feat;
-	feat.push_back(type2int[x.type]);
 	feat.push_back(x.id);
 	feat.push_back(x.gender);
+	feat.push_back(type2int[x.type]);
 	if (x.birth.isVailed())
 	{
 		int year, month, day;
@@ -355,7 +360,7 @@ feature get_basic_feature(customer x)
 		for (int i = 0; i < 4; ++i)
 			feat.push_back(0);
 		for (int k = 0; k < 10; ++k)
-			for (int i = 1910; i + k <= 2012; ++i)
+			for (int i = 1930; i + k <= 2012; ++i)
 				feat.push_back(0);
 	}
 	//histogram of month and year;
@@ -385,7 +390,9 @@ void extract_feature()
 	for (auto it : Hash)
 	{
 		feat[it.first].push_back(get_basic_feature(T_customer[it.first]));
+		
 		std::sort(it.second.begin(), it.second.end(), cmp);
+		
 		for (auto fun : func_vec)
 		{
 			feature tfeature = fun(it.second);
@@ -408,36 +415,47 @@ void formulation_feat2vec()
 	}
 }
 
-vec check_each_feat()
+const int recall_min[5] = {100, 500, 1000, 1200, 1440};
+
+vec_d check_each_feat()
 {
 
 #ifndef LOAD_MARK
-	std::ofstream ofs("check_each_feature.txt");
-	size_t dim = featVec.begin()->second.size();
-	vec feature_mark;
-	
-	for (size_t i = 0; i < dim; ++i)
+	std::string basic_name = "check_each_feature";
+	for (int k = 0; k < 5; ++k)
 	{
-		std::vector<int> id;
-		vec Feat;
-		for (auto it : featVec)
+		int RECALL_MIN = recall_min[k];
+		std::stringstream ss;
+		ss << basic_name << RECALL_MIN << ".txt";
+		std::string fname = ss.str();
+		std::ofstream ofs(fname.c_str());
+		size_t dim = featVec.begin()->second.size();
+		vec_d feature_mark;
+
+		for (size_t i = 0; i < dim; ++i)
 		{
-			id.push_back(it.first);
-			Feat.push_back(it.second[i]);
+			std::vector<int> id;
+			vec_d Feat;
+			for (auto it : featVec)
+			{
+				id.push_back(it.first);
+				Feat.push_back(it.second[i]);
+			}
+			double result = mark(id, Feat,RECALL_MIN);
+			feature_mark.push_back(result);
+			std::cout << i + 1 << " :" << result << std::endl;
+			ofs << result << std::endl;
+			//system("pause");
 		}
-		double result = mark(id, Feat);
-		feature_mark.push_back(result);
-		std::cout << i+1 << " :" << result << std::endl;
-		ofs << result << std::endl;
-		//system("pause");
+		ofs.close();
+		std::cout << "Calculate " << RECALL_MIN << " Done" << std::endl;
 	}
-	ofs.close();
 	return feature_mark;
 #endif
 
 #ifdef LOAD_MARK
-	std::ifstream ifs("check_each_feature.txt");
-	vec feature_mark;
+	std::ifstream ifs("check_each_feature500.txt");
+	vec_d feature_mark;
 	double x;
 	while (ifs >> x)
 		feature_mark.push_back(x);
@@ -449,10 +467,10 @@ vec check_each_feat()
 void display_feature(double threshold)
 {
 #ifdef TRAIN
-	std::ofstream ofs("feat1_train.data");
+	std::ofstream ofs("train.data");
 #endif
 #ifdef TEST
-	std::ofstream ofs("feat1_test.data");
+	std::ofstream ofs("test.data");
 #endif
 	srand(time(NULL));
 	for (auto it : featVec)

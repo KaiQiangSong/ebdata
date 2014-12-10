@@ -17,3 +17,13 @@ std::string formu(std::string s)
 		s = s.substr(0, s.size() - 1);
 	return s;
 }
+
+void Swap(int &x, int &y)
+{
+	int t = x; x = y; y = t;
+}
+
+void Swap(double &x, double &y)
+{
+	double t = x; x = y; y = t;
+}
