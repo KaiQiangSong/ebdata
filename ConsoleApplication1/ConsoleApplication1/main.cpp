@@ -17,8 +17,6 @@ By defining TRAIN or TEST in the headfile.
 #include "abnormal.hpp"
 
 
-
-
 //-----------------------------Load and Print part-----------------------------//
 //std::vector<customer> T_customer;
 std::map<int, customer> T_customer;
@@ -58,22 +56,32 @@ vec_d feature_mark;
 typedef std::map<int, double> id2feat;
 #include "analysis.hpp"
 
-
+//-----------------------------Scale the Data-------------------------------//
+std::vector<std::pair<double, double>> Scale;
+#include "scale.hpp"
 
 int main(int argv, char *argc[])
 {
 	load_all();
 	std::cout << "Load Done" << std::endl;
+
 	build_hash();
 	std::cout << "Build Hash List Done" << std::endl;
+	
 	make_statistics_func_list();
 	make_feature_list();
 	extract_feature();
 	std::cout << "Extract Feature Done" << std::endl;
+	
 	formulation_feat2vec();
 	std::cout << "Formulation feature to Vector Done" << std::endl;
+
+	do_scale();
+	std::cout << "Scale Data Done" << std::endl;
+
 	feature_mark = check_each_feat();
 	std::cout << "Check Each feat Done" << std::endl;
+
 	display_feature(0.18);
 	std::cout << "Display Done" << std::endl;
 	return 0;

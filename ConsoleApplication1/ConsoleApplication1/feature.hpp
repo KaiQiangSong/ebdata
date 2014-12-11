@@ -415,7 +415,7 @@ void formulation_feat2vec()
 	}
 }
 
-const int recall_min[5] = {100, 500, 1000, 1200, 1440};
+const int recall_min[5] = {100, 500, 1000, 1200, 1450};
 
 vec_d check_each_feat()
 {
